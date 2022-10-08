@@ -18,10 +18,6 @@
       - sbcntr-dev
     - インスタンス作成時に自動生成されるSG
       - aws-cloud9-sbcntr-dev-xxxxx-InstanceSecurityGroup-xxxxx
-    - IAMポリシー
-      - sbcntr-AccessingECRRepositoryPolicy
-    - IAMロール
-      - sbcntr-cloud9-role
 - 書籍と異なる設定
 
 ## Training Menu
@@ -41,7 +37,3 @@
 - 書籍p.203-215の内容の構築
 - Terraform code追加なし
   - Cloud9はSecurityGroupを作成時に指定ができず、自動で作成されるため、Cloud9関連のリソースはterraform管理対象外とし、手動構築とする。
-
-### Chapter3
-- 書籍p.216-245の内容の構築
-- Cloud9関連の設定変更は手動で実施する。
