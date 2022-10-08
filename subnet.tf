@@ -113,3 +113,30 @@ resource "aws_subnet" "sbcntrSubnetPublicManagement1c" {
     Type = "Public"
   }
 }
+
+##############################
+# Public Subnet(Egress)
+##############################
+resource "aws_subnet" "sbcntrSubnetPrivateEgress1a" {
+  vpc_id                  = aws_vpc.sbcntrVpc.id
+  availability_zone       = data.aws_availability_zones.available.names[0]
+  cidr_block              = "10.0.248.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "sbcntr-subnet-private-egress-1a"
+    Type = "Isolated"
+  }
+}
+
+resource "aws_subnet" "sbcntrSubnetPrivateEgress1c" {
+  vpc_id                  = aws_vpc.sbcntrVpc.id
+  availability_zone       = data.aws_availability_zones.available.names[1]
+  cidr_block              = "10.0.249.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "sbcntr-subnet-private-egress-1c"
+    Type = "Isolated"
+  }
+}
