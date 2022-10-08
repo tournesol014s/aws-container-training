@@ -49,3 +49,23 @@ resource "aws_vpc_endpoint" "sbcntrVpceS3" {
     Name = "sbcntr-vpce-s3"
   }
 }
+
+resource "aws_vpc_endpoint" "sbcntrVpceLogs" {
+  vpc_id              = aws_vpc.sbcntrVpc.id
+  service_name        = "com.amazonaws.ap-northeast-1.logs"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+
+  subnet_ids = [
+    aws_subnet.sbcntrSubnetPrivateEgress1a.id,
+    aws_subnet.sbcntrSubnetPrivateEgress1c.id,
+  ]
+
+  security_group_ids = [
+    aws_security_group.sbcntrSgEgress.id,
+  ]
+
+  tags = {
+    Name = "sbcntr-vpce-logs"
+  }
+}

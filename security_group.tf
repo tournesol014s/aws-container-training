@@ -153,6 +153,16 @@ resource "aws_security_group_rule" "sbcntrSgInternalFromSgManagementTCP" {
   description              = "HTTP for management server"
 }
 
+resource "aws_security_group_rule" "sbcntrSgInternalFromSgManagementTCPTestPort" {
+  type                     = "ingress"
+  from_port                = 10080
+  to_port                  = 10080
+  protocol                 = "tcp"
+  source_security_group_id = aws_security_group.sbcntrSgManagement.id
+  security_group_id        = aws_security_group.sbcntrSgInternal.id
+  description              = "Test port for management server"
+}
+
 ##############################
 # Security Group(DB)
 ##############################
