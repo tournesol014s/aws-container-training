@@ -12,6 +12,12 @@
   - AWS Provider : 4.34.0
   - tfenv : 2.2.3
 - トレーニング用のため、tfstateファイルはローカルで管理する想定です。必要に応じてS3での管理を検討して下さい。
+- 手動作成したリソース
+  - Cloud9関連
+    - Cloud9インスタンス/EBS
+      - sbcntr-dev
+    - インスタンス作成時に自動生成されるSG
+      - aws-cloud9-sbcntr-dev-xxxxx-InstanceSecurityGroup-xxxxx
 - 書籍と異なる設定
 
 ## Training Menu
@@ -24,5 +30,10 @@
 
 ### Chapter1
 - 書籍p.195-202の内容の構築
-- PublicSubnetのIngressは、書籍やコード上は0.0.0.0/0としていますが、セキュリティの観点からアクセス元のIPアドレスに絞ることを推奨
+- PublicSubnetのIngressは、書籍やコード上は0.0.0.0/0としていますが、セキュリティの観点からアクセス元のIPアドレスに絞ることを推奨。
   - 変数名 : [clientIpAddress](./main.tf#L26-L27)
+
+### Chapter2
+- 書籍p.203-215の内容の構築
+- Terraform code追加なし
+  - Cloud9はSecurityGroupを作成時に指定ができず、自動で作成されるため、Cloud9関連のリソースはterraform管理対象外とし、手動構築とする。
