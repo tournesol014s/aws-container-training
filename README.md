@@ -25,6 +25,8 @@
 - 書籍と異なる設定
   - ECS Cloudwatch Log Group名
     - /ecs/sbcntr-backend-def -> /ecs/sbcntr-backend
+    - /ecs/sbcntr-frontend-def -> /ecs/sbcntr-frontend
+  - FrontendもBackend同様、ECSサービスを構築
 
 ## Training Menu
 ### Chapter0
@@ -56,3 +58,7 @@
 - LogDriver出力先のCloudWatch Logsは、明示的に作成を行う。
 - FargateのexecutionRoleは明示的に作成を行う。
 - CodeDeployの設定作成を明示的に行う。
+
+### Chapter6
+- 書籍p.286-296の内容の構築
+- FrontendもBackend同様、ECS Cluster/サービスを構築

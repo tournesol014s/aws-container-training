@@ -86,3 +86,52 @@ resource "aws_lb_listener" "sbcntrLisnerSbcntrdemoGreen" {
   }
 
 }
+
+resource "aws_lb" "sbcntrAlbFrontend" {
+  name               = "sbcntr-alb-ingress-frontend"
+  internal           = false
+  load_balancer_type = "application"
+
+  subnets = [
+    aws_subnet.sbcntrSubnetPublicIngress1a.id,
+    aws_subnet.sbcntrSubnetPublicIngress1c.id,
+  ]
+
+  security_groups = [
+    aws_security_group.sbcntrSgIngress.id,
+  ]
+
+  tags = {
+    Name = "sbcntr-alb-ingress-frontend"
+  }
+}
+
+resource "aws_lb_target_group" "sbcntrTargetGroupFrontend" {
+  name        = "sbcntr-tg-frontend"
+  port        = 80
+  protocol    = "HTTP"
+  target_type = "ip"
+  vpc_id      = aws_vpc.sbcntrVpc.id
+
+  health_check {
+    path                = "/healthcheck"
+    port                = "traffic-port"
+    healthy_threshold   = 3
+    unhealthy_threshold = 2
+    timeout             = 5
+    interval            = 15
+    matcher             = 200
+
+  }
+}
+
+resource "aws_lb_listener" "sbcntrFrontendListener" {
+  load_balancer_arn = aws_lb.sbcntrAlbFrontend.arn
+  port              = "80"
+  protocol          = "HTTP"
+
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.sbcntrTargetGroupFrontend.arn
+  }
+}
