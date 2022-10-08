@@ -23,6 +23,8 @@
     - IAMロール
       - sbcntr-cloud9-role
 - 書籍と異なる設定
+  - ECS Cloudwatch Log Group名
+    - /ecs/sbcntr-backend-def -> /ecs/sbcntr-backend
 
 ## Training Menu
 ### Chapter0
@@ -48,3 +50,9 @@
 
 ### Chapter4
 - 書籍p.246-265の内容の構築
+
+### Chapter5
+- 書籍p.265-285の内容の構築
+- LogDriver出力先のCloudWatch Logsは、明示的に作成を行う。
+- FargateのexecutionRoleは明示的に作成を行う。
+- CodeDeployの設定作成を明示的に行う。
