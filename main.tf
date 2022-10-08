@@ -22,3 +22,7 @@ data "aws_caller_identity" "self" {}
 variable "region" {
   default = "ap-northeast-1"
 }
+
+variable "clientIpAddress" {
+  default = "0.0.0.0/0"
+}

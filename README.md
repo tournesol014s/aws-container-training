@@ -11,6 +11,7 @@
   - Terraform : 1.3.2
   - AWS Provider : 4.34.0
   - tfenv : 2.2.3
+- トレーニング用のため、tfstateファイルはローカルで管理する想定です。必要に応じてS3での管理を検討して下さい。
 - 書籍と異なる設定
 
 ## Training Menu
@@ -21,3 +22,7 @@
   - AWSアカウントIDの参照のため、aws_caller_identityをdata参照。
   - デフォルトリージョンを変数で設定。
 
+### Chapter1
+- 書籍p.195-202の内容の構築
+- PublicSubnetのIngressは、書籍やコード上は0.0.0.0/0としていますが、セキュリティの観点からアクセス元のIPアドレスに絞ることを推奨
+  - 変数名 : [clientIpAddress](./main.tf#L26-L27)
