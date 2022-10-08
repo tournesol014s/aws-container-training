@@ -6,3 +6,12 @@ resource "aws_ecs_cluster" "sbcntrEcsBackendCluster" {
     value = "enabled"
   }
 }
+
+resource "aws_ecs_cluster" "sbcntrECSClusterFrontend" {
+  name = "sbcntr-ecs-frontend-cluster"
+
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
