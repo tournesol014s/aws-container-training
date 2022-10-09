@@ -4,7 +4,6 @@ resource "aws_ecs_service" "sbcntrEcsBackendService" {
   task_definition                    = aws_ecs_task_definition.sbcntrBackendDef.arn
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
-  force_new_deployment               = true
   scheduling_strategy                = "REPLICA"
   desired_count                      = 2
   deployment_minimum_healthy_percent = 100
@@ -41,6 +40,38 @@ resource "aws_ecs_service" "sbcntrEcsBackendService" {
       desired_count,
       task_definition,
     ]
+  }
+
+}
+
+resource "aws_appautoscaling_target" "sbcntrECSBackendAutoScalingTarget" {
+  max_capacity       = 4
+  min_capacity       = 2
+  resource_id        = "service/${aws_ecs_cluster.sbcntrEcsBackendCluster.name}/${aws_ecs_service.sbcntrEcsBackendService.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  service_namespace  = "ecs"
+
+  lifecycle {
+    ignore_changes = [
+      min_capacity
+    ]
+  }
+}
+
+resource "aws_appautoscaling_policy" "sbcntrECSBackendAutoScalingPolicy" {
+  name               = "sbcntr-ecs-ScalingPolicy"
+  policy_type        = "TargetTrackingScaling"
+  service_namespace  = aws_appautoscaling_target.sbcntrECSBackendAutoScalingTarget.service_namespace
+  resource_id        = aws_appautoscaling_target.sbcntrECSBackendAutoScalingTarget.resource_id
+  scalable_dimension = aws_appautoscaling_target.sbcntrECSBackendAutoScalingTarget.scalable_dimension
+
+  target_tracking_scaling_policy_configuration {
+    predefined_metric_specification {
+      predefined_metric_type = "ECSServiceAverageCPUUtilization"
+    }
+    target_value       = 80
+    scale_out_cooldown = 300
+    scale_in_cooldown  = 300
   }
 
 }
