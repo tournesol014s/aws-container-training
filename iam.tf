@@ -45,3 +45,27 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRolePolicyAttachment"
   role       = aws_iam_role.ecsTaskExecutionRole.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
+
+##############################
+# For RDS Enhanced Monitoring
+##############################
+data "aws_iam_policy_document" "rdsMonitoringAssumeRole" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["monitoring.rds.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "rdsMonitoringRole" {
+  name               = "rdsMonitoringRole"
+  assume_role_policy = data.aws_iam_policy_document.rdsMonitoringAssumeRole.json
+}
+
+resource "aws_iam_role_policy_attachment" "rdsMonitoringolePolicy" {
+  role       = aws_iam_role.rdsMonitoringRole.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+}
