@@ -24,3 +24,12 @@ resource "aws_cloudwatch_log_group" "sbcntrApplicationLog" {
     Name = "sbcntr-firelens-log"
   }
 }
+
+resource "aws_cloudwatch_log_group" "sbcntrBastionLog" {
+  name              = "/ecs/sbcntr-bastion"
+  retention_in_days = 14
+
+  tags = {
+    Name = "sbcntr-bastion-log"
+  }
+}
