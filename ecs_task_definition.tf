@@ -114,3 +114,33 @@ resource "aws_ecs_task_definition" "sbcntrFrontendDef" {
 TASK_DEFINITION
 
 }
+
+resource "aws_ecs_task_definition" "sbcntrBastionDef" {
+  family                   = "bastion"
+  requires_compatibilities = ["FARGATE"]
+  network_mode             = "awsvpc"
+  cpu                      = 256
+  memory                   = 512
+  execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  task_role_arn            = aws_iam_role.sbcntrECSTaskRole.arn
+
+  container_definitions = <<TASK_DEFINITION
+[
+    {
+        "name": "bastion",
+        "image": "${data.aws_caller_identity.self.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/sbcntr-base:bastion",
+        "cpu": 256,
+        "memory": 128,
+        "logConfiguration": {
+            "logDriver": "awslogs",
+            "options": {
+                "awslogs-group": "${aws_cloudwatch_log_group.sbcntrBastionLog.name}",
+                "awslogs-region": "${var.region}",
+                "awslogs-stream-prefix": "ecs"
+            }
+        }
+    }
+]
+TASK_DEFINITION
+
+}

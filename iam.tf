@@ -499,3 +499,63 @@ resource "aws_iam_policy" "sbcntrAccessingLogDestination" {
 }
 POLICY
 }
+
+##############################
+# For Bastion
+##############################
+resource "aws_iam_role_policy_attachment" "sbcntrECSTaskRolePolicyAttachmentBySsmPassrolePolicy" {
+  role       = aws_iam_role.sbcntrECSTaskRole.name
+  policy_arn = aws_iam_policy.sbcntrSsmPassrolePolicy.arn
+}
+
+resource "aws_iam_policy" "sbcntrSsmPassrolePolicy" {
+  name        = "sbcntr-SsmPassrolePolicy"
+  path        = "/"
+  description = "sbcntr-SsmPassrolePolicy"
+  policy      = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": { "iam:PassedToService": "ssm.amazonaws.com" }
+      }
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ssm:DeleteActivation",
+        "ssm:RemoveTagsFromResource",
+        "ssm:AddTagsToResource",
+        "ssm:CreateActivation"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
+POLICY
+}
+
+data "aws_iam_policy_document" "ssmAssumeRole" {
+  statement {
+    actions = ["sts:AssumeRole"]
+
+    principals {
+      type        = "Service"
+      identifiers = ["ssm.amazonaws.com"]
+    }
+  }
+}
+
+resource "aws_iam_role" "sbcntrSSMServiceRole" {
+  name               = "sbcntr-SSMServiceRole"
+  assume_role_policy = data.aws_iam_policy_document.ssmAssumeRole.json
+}
+
+resource "aws_iam_role_policy_attachment" "sbcntrSSMServiceRolePolicyAttachment" {
+  role       = aws_iam_role.sbcntrSSMServiceRole.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
