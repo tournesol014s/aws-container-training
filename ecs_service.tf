@@ -4,6 +4,7 @@ resource "aws_ecs_service" "sbcntrEcsBackendService" {
   task_definition                    = aws_ecs_task_definition.sbcntrBackendDef.arn
   launch_type                        = "FARGATE"
   platform_version                   = "1.4.0"
+  force_new_deployment               = true
   scheduling_strategy                = "REPLICA"
   desired_count                      = 2
   deployment_minimum_healthy_percent = 100
