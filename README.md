@@ -85,3 +85,6 @@
 - 書籍p.337-368の内容の構築
 - CodeCommitがECRへアクセスするためのIAM policyは、Cloud9用に作成したsbcntr-AccessingECRRepositoryPolicyとは別に新規作成。
 - CodeCommitへpushされたことをトリガーに、CodePipelineを起動するためのEventBridgeは、手動で作成。（コンソールからPipeline作成時は自動生成される）
+
+### Chapter11
+- 書籍p.369-372の内容の構築
