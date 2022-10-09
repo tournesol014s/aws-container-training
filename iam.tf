@@ -441,3 +441,61 @@ resource "aws_iam_policy" "sbcntrCodePipelineCloudWatchEventPolicy" {
 }
 POLICY
 }
+
+
+##############################
+# For Log Router
+##############################
+resource "aws_iam_role" "sbcntrECSTaskRole" {
+  name               = "sbcntr-ecsTaskRole"
+  assume_role_policy = data.aws_iam_policy_document.ecsTaskAssumeRole.json
+}
+
+resource "aws_iam_role_policy_attachment" "sbcntrECSTaskRolePolicyAttachment" {
+  role       = aws_iam_role.sbcntrECSTaskRole.name
+  policy_arn = aws_iam_policy.sbcntrAccessingLogDestination.arn
+}
+
+resource "aws_iam_policy" "sbcntrAccessingLogDestination" {
+  name        = "sbcntr-AccessingLogDestination"
+  path        = "/"
+  description = "sbcntr-AccessingLogDestination"
+  policy      = <<POLICY
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:ListBucketMultipartUploads",
+        "s3:PutObject"
+      ],
+      "Resource": [
+        "${aws_s3_bucket.sbcntrApplicationLogBucket.arn}",
+        "${aws_s3_bucket.sbcntrApplicationLogBucket.arn}/*"
+      ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": ["kms:Decrypt", "kms:GenerateDataKey"],
+      "Resource": ["*"]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams",
+        "logs:PutLogEvents"
+      ],
+      "Resource": ["*"]
+    }
+  ]
+}
+POLICY
+}

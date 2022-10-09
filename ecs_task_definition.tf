@@ -5,6 +5,7 @@ resource "aws_ecs_task_definition" "sbcntrBackendDef" {
   cpu                      = 512
   memory                   = 1024
   execution_role_arn       = aws_iam_role.ecsTaskExecutionRole.arn
+  task_role_arn            = aws_iam_role.sbcntrECSTaskRole.arn
 
   container_definitions = <<TASK_DEFINITION
 [
@@ -27,11 +28,39 @@ resource "aws_ecs_task_definition" "sbcntrBackendDef" {
         "essential": true,
         "readonlyRootFilesystem": true,
         "logConfiguration": {
+            "logDriver": "awsfirelens"
+        }
+    },
+    {
+        "name": "log_router",
+        "image": "${data.aws_caller_identity.self.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/sbcntr-base:log-router",
+        "cpu": 64,
+        "memory": 128,
+        "essential": true,
+        "user": "0",
+        "firelensConfiguration": {
+            "type": "fluentbit"
+        },
+        "environment": [
+            { "name" : "APP_ID", "value" : "backend_def" },
+            { "name" : "AWS_ACCOUNT_ID", "value" : "${data.aws_caller_identity.self.account_id}" },
+            { "name" : "AWS_REGION", "value" : "${var.region}" },
+            { "name" : "LOG_BUCKET_NAME", "value" : "${aws_s3_bucket.sbcntrApplicationLogBucket.id}" },
+            { "name" : "LOG_GROUP_NAME", "value" : "${aws_cloudwatch_log_group.sbcntrBackendLog.name}" }
+        ],
+        "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
-                "awslogs-group": "/ecs/sbcntr-backend",
-                "awslogs-region": "ap-northeast-1",
-                "awslogs-stream-prefix": "ecs"
+                "awslogs-group": "${aws_cloudwatch_log_group.sbcntrApplicationLog.name}",
+                "awslogs-region": "${var.region}",
+                "awslogs-stream-prefix": "firelens"
+            }
+        },
+        "firelensConfiguration": {
+            "type": "fluentbit",
+            "options": {
+                "config-file-type": "file",
+                "config-file-value": "/fluent-bit/custom.conf"
             }
         }
     }
@@ -75,8 +104,8 @@ resource "aws_ecs_task_definition" "sbcntrFrontendDef" {
         "logConfiguration": {
             "logDriver": "awslogs",
             "options": {
-                "awslogs-group": "/ecs/sbcntr-frontend",
-                "awslogs-region": "ap-northeast-1",
+                "awslogs-group": "${aws_cloudwatch_log_group.sbcntrFrontendLog.name}",
+                "awslogs-region": "${var.region}",
                 "awslogs-stream-prefix": "ecs"
             }
         }
