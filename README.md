@@ -27,6 +27,8 @@
     - /ecs/sbcntr-backend-def -> /ecs/sbcntr-backend
     - /ecs/sbcntr-frontend-def -> /ecs/sbcntr-frontend
   - FrontendもBackend同様、ECSサービスを構築
+  - RDSパラメータグループはdefaultではなく、別途作成
+  - RDS 削除保護を無効化
 
 ## Training Menu
 ### Chapter0
@@ -61,4 +63,12 @@
 
 ### Chapter6
 - 書籍p.286-296の内容の構築
-- FrontendもBackend同様、ECS Cluster/サービスを構築
+- FrontendもBackend同様、ECS Cluster/サービスを構築。
+
+### Chapter7
+- 書籍p.297-313の内容の構築
+- RDSパラメータグループはdefaultではなく、別途作成。
+- RDS削除保護を無効にする。
+  - terraform destroyでfailしないようにするため。
+- RDSパスワードは、random_passwordを利用して自動生成する。 
+
