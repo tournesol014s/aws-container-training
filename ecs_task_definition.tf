@@ -13,6 +13,12 @@ resource "aws_ecs_task_definition" "sbcntrBackendDef" {
         "image": "${data.aws_caller_identity.self.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/sbcntr-backend:v1",
         "cpu": 256,
         "memory": 512,
+        "secrets": [
+            {"name": "DB_HOST", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:host::"},
+            {"name": "DB_NAME", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:dbname::"},
+            {"name": "DB_USERNAME", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:username::"},
+            {"name": "DB_PASSWORD", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:password::"}
+        ],
         "portMappings": [
             {
                 "containerPort": 80
@@ -46,7 +52,7 @@ resource "aws_ecs_task_definition" "sbcntrFrontendDef" {
 [
     {
         "name": "app",
-        "image": "${data.aws_caller_identity.self.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/sbcntr-frontend:v1",
+        "image": "${data.aws_caller_identity.self.account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/sbcntr-frontend:dbv1",
         "cpu": 256,
         "memory": 512,
         "portMappings": [
@@ -59,6 +65,12 @@ resource "aws_ecs_task_definition" "sbcntrFrontendDef" {
             {"name": "SESSION_SECRET_KEY", "value": "41b678c65b37bf99c37bcab522802760"},
             {"name": "APP_SERVICE_HOST", "value": "http://${aws_lb.sbcntrAlbInternal.dns_name}"},
             {"name": "NOTIF_SERVICE_HOST", "value": "http://${aws_lb.sbcntrAlbInternal.dns_name}"}
+        ],
+        "secrets": [
+            {"name": "DB_HOST", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:host::"},
+            {"name": "DB_NAME", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:dbname::"},
+            {"name": "DB_USERNAME", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:username::"},
+            {"name": "DB_PASSWORD", "valueFrom": "${aws_secretsmanager_secret.sbcntrMySqlSecret.arn}:password::"}
         ],
         "logConfiguration": {
             "logDriver": "awslogs",
