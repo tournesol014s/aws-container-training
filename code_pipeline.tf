@@ -84,11 +84,11 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "sbcntrCodepipelin
   bucket = aws_s3_bucket.sbcntrCodepipelineBucket.bucket
 
   rule {
-      bucket_key_enabled = false
+    bucket_key_enabled = false
 
-      apply_server_side_encryption_by_default {
-        sse_algorithm = "AES256"
-      }
+    apply_server_side_encryption_by_default {
+      sse_algorithm = "AES256"
+    }
   }
 }
 
@@ -113,5 +113,5 @@ EOF
 resource "aws_cloudwatch_event_target" "sbcntrCodePipelinePushRepository" {
   rule     = aws_cloudwatch_event_rule.sbcntrCodePipelinePushRepository.name
   arn      = aws_codepipeline.sbcntrPipeline.arn
-  role_arn    = aws_iam_role.sbcntrCodePipelineCloudWatchEventRole.arn
+  role_arn = aws_iam_role.sbcntrCodePipelineCloudWatchEventRole.arn
 }
