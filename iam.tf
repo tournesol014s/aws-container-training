@@ -46,6 +46,24 @@ resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRolePolicyAttachment"
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
+resource "aws_iam_role_policy_attachment" "ecsTaskExecutionRoleGettingSecretsPolicyAttachment" {
+  role       = aws_iam_role.ecsTaskExecutionRole.name
+  policy_arn = aws_iam_policy.sbcntrGettingSecretsPolicy.arn
+}
+
+resource "aws_iam_policy" "sbcntrGettingSecretsPolicy" {
+  name   = "sbcntr-GettingSecretsPolicy"
+  policy = data.aws_iam_policy_document.sbcntrGettingSecretsPolicyDocument.json
+}
+
+data "aws_iam_policy_document" "sbcntrGettingSecretsPolicyDocument" {
+  statement {
+    actions   = ["secretsmanager:GetSecretValue"]
+    resources = ["*"]
+    sid       = "GetSecretForECS"
+  }
+}
+
 ##############################
 # For RDS Enhanced Monitoring
 ##############################

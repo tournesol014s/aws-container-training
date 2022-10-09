@@ -72,3 +72,5 @@
   - terraform destroyでfailしないようにするため。
 - RDSパスワードは、random_passwordを利用して自動生成する。 
 
+### Chapter8
+- 書籍p.314-321の内容の構築
