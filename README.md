@@ -20,6 +20,7 @@
       - aws-cloud9-sbcntr-dev-xxxxx-InstanceSecurityGroup-xxxxx
     - IAMポリシー
       - sbcntr-AccessingECRRepositoryPolicy
+      - sbcntr-AccessingCodeCommitPolicy
     - IAMロール
       - sbcntr-cloud9-role
 - 書籍と異なる設定
@@ -29,6 +30,7 @@
   - FrontendもBackend同様、ECSサービスを構築
   - RDSパラメータグループはdefaultではなく、別途作成
   - RDS 削除保護を無効化
+  - CodeCommit用のIAM policyを新規に作成
 
 ## Training Menu
 ### Chapter0
@@ -78,3 +80,8 @@
 ### Chapter9
 - 書籍p.321-334の内容の構築
 - backendアプリのデプロイメントはCodeDeployに委ねているため、terraformによる新しいタスク定義でのECSサービスのデプロイは行えない。そのためp.323-327の内容は手動で実行する必要がある。
+
+### Chapter10
+- 書籍p.337-368の内容の構築
+- CodeCommitがECRへアクセスするためのIAM policyは、Cloud9用に作成したsbcntr-AccessingECRRepositoryPolicyとは別に新規作成。
+- CodeCommitへpushされたことをトリガーに、CodePipelineを起動するためのEventBridgeは、手動で作成。（コンソールからPipeline作成時は自動生成される）
