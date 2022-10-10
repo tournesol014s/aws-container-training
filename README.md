@@ -107,3 +107,10 @@
 ### Chapter16
 - 書籍p.423-432の内容の構築
 - Terraform code追加・修正なし
+
+### Capter17
+- 作成したリソースの削除
+- 基本的には、`terraform destroy`による削除。手動作成したCloud9関連のリソースは手動削除する。
+  - 先にCloud9インスタンスを削除しないと、`terraform destroy`実行時にsubnet等の削除が行えない。
+  - ECR,S3は中身が存在すると`terraform destroy`に失敗するので、事前にコンソールから手動削除する。
+  - ECR,S3,CodeCommitの内容を残したい場合は、`state rm`によりTerraform管理対象外にしたうえで`terraform destroy`を行う。
